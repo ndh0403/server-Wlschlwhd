@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>산호 모니터링</title>
+</head>
+<body>
+<h1>산호 센서 데이터</h1>
+<div id="data"></div>
+
+<script>
+function fetchSensorData() {
+  fetch('https://server-wlschlwhd.onrender.com/data')  // ✅ Render 서버 주소로 변경
+    .then(response => response.json())
+    .then(data => {
+      const display = `
+        <p>수온: ${data.temperature}</p>
+        <p>pH: ${data.pH}</p>
+        <p>염도: ${data.salinity}</p>
+        <p>조도: ${data.light}</p>
+        <p>마지막 업데이트: ${data.lastUpdated ? new Date(data.lastUpdated).toLocaleTimeString() : '데이터 없음'}</p>
+      `;
+      document.getElementById('data').innerHTML = display;
+    })
+    .catch(err => {
+      document.getElementById('data').innerHTML = '서버 연결 실패';
+      console.error(err);
+    });
+}
+
+// 1분마다 데이터 갱신
+fetchSensorData();
+setInterval(fetchSensorData, 60000);
+</script>
+</body>
+</html>
